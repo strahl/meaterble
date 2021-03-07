@@ -4,8 +4,8 @@
 # run readMeater.py <address>
 # python ./readMeater.py D0:D9:4F:83:E8:EB
 
-import time
 from bluepy import btle
+import json
 import time
 import click
 import paho.mqtt.client as mqtt 
@@ -31,7 +31,14 @@ def main(device, mosquitto_server):
          dev.update()
          print(dev)
          if mosquitto_server is not None:
-            client.publish("TEMPERATURE_C", dev.getTipC())
+            client.publish("meater", json.dumps({
+               'tip_C' : dev.getTipC(),
+               'ambient_C' : dev.getAmbientC(),
+               'battery' : dev.getBattery(),
+               'bluetooth_address' : dev.getAddress(),
+               'id' : dev.getID(),
+               'firmware' : dev.getFirmware(),
+            }))
       time.sleep(1)
 
 if __name__ == '__main__':

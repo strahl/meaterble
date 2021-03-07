@@ -21,10 +21,14 @@ class MeaterProbe:
       
    @staticmethod
    def toCelsius(value):
+      if value is None:
+         return None
       return (float(value)+8.0)/16.0
 
    @staticmethod
    def toFahrenheit(value):
+      if value is None:
+         return None
       return ((MeaterProbe.toCelsius(value)*9)/5)+32.0
 
    def getTip(self):
@@ -70,10 +74,10 @@ class MeaterProbe:
          self._tip = MeaterProbe.bytesToInt(tempBytes[0], tempBytes[1])
          self._ambient = MeaterProbe.convertAmbient(tempBytes)
          self._battery = MeaterProbe.bytesToInt(batteryBytes[0], batteryBytes[1])*10
-         (self._firmware, self._id) = str(self.readCharacteristic(22)).split("_")
+         (self._firmware, self._id) = self.readCharacteristic(22).decode().split('_')
          self._lastUpdate = time.time()
       else:
-         self._tip = self._ambient = self._ambient = self._battery = self._firmware = self._id = self._lastUpdate = None
+         self._tip = self._ambient = self._battery = self._firmware = self._id = self._lastUpdate = None
 
    def __str__(self):
       if self._lastUpdate is not None:
