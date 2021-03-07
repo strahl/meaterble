@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 # Find the meater address with hcitool lescan (label MEATER).
 # run readMeater.py <address>
@@ -13,12 +13,12 @@ import binascii
 
 from meater import MeaterProbe
  
-print "Connecting..."
+print("Connecting...")
 devs = [MeaterProbe(addr) for addr in sys.argv[1:]]
-print "Connected"
+print("Connected")
 
 while True:
     for dev in devs:
        dev.update()
-       print dev
+       print(dev)
     time.sleep(1)
