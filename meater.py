@@ -28,54 +28,34 @@ class MeaterProbe:
       return ((MeaterProbe.toCelsius(value)*9)/5)+32.0
 
    def getTip(self):
-      if hasattr(self, '_tip'):
-         return self._tip
-      return None
+      return self._tip
 
    def getTipF(self):
-      if hasattr(self, '_tip'):
-         return MeaterProbe.toFahrenheit(self._tip)
-      return None
+      return MeaterProbe.toFahrenheit(self._tip)
 
    def getTipC(self):
-      if hasattr(self, '_tip'):
-         return MeaterProbe.toCelsius(self._tip)
-      return None
-
+      return MeaterProbe.toCelsius(self._tip)
+   
    def getAmbientF(self):
-      if hasattr(self, '_ambient'):
-         return MeaterProbe.toFahrenheit(self._ambient)
-      return None
-
+      return MeaterProbe.toFahrenheit(self._ambient)
+   
    def getAmbient(self):
-      if hasattr(self, '_ambient'):
-         return self._ambient
-      return None
-
+      return self._ambient
+   
    def getAmbientC(self):
-      if hasattr(self, '_ambient'):
-         return MeaterProbe.toCelsius(self._ambient)
-      return None
-
+      return MeaterProbe.toCelsius(self._ambient)
+   
    def getBattery(self):
-      if hasattr(self, '_ambient'):
-         return self._battery
-      return None
-
+      return self._battery
+   
    def getAddress(self):
-      if hasattr(self, '_addr'):
-         return self._addr
-      return None
-
+      return self._addr
+   
    def getID(self):
-      if hasattr(self, '_id'):
-         return self._id
-      return None
-
+      return self._id
+   
    def getFirmware(self):
-      if hasattr(self, '_firmware'):
-         return self._firmware
-      return None
+      return self._firmware
 
    def connect(self):
       self._dev = btle.Peripheral(self._addr)
@@ -92,8 +72,10 @@ class MeaterProbe:
          self._battery = MeaterProbe.bytesToInt(batteryBytes[0], batteryBytes[1])*10
          (self._firmware, self._id) = str(self.readCharacteristic(22)).split("_")
          self._lastUpdate = time.time()
+      else:
+         self._tip = self._ambient = self._ambient = self._battery = self._firmware = self._id = self._lastUpdate = None
 
    def __str__(self):
-      if hasattr(self, '_lastUpdate'):
+      if self._lastUpdate is not None:
          return "%s %s probe: %s tip: %fF/%fC ambient: %fF/%fC battery: %d%% age: %ds" % (self.getAddress(), self.getFirmware(), self.getID(), self.getTipF(), self.getTipC(), self.getAmbientF(), self.getAmbientC(), self.getBattery(), time.time() - self._lastUpdate)
       return "No data yet."
