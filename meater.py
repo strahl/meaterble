@@ -28,34 +28,54 @@ class MeaterProbe:
       return ((MeaterProbe.toCelsius(value)*9)/5)+32.0
 
    def getTip(self):
-      return self._tip
+      if hasattr(self, '_tip'):
+         return self._tip
+      return None
 
    def getTipF(self):
-      return MeaterProbe.toFahrenheit(self._tip)
+      if hasattr(self, '_tip'):
+         return MeaterProbe.toFahrenheit(self._tip)
+      return None
 
    def getTipC(self):
-      return MeaterProbe.toCelsius(self._tip)
+      if hasattr(self, '_tip'):
+         return MeaterProbe.toCelsius(self._tip)
+      return None
 
    def getAmbientF(self):
-      return MeaterProbe.toFahrenheit(self._ambient)
+      if hasattr(self, '_ambient'):
+         return MeaterProbe.toFahrenheit(self._ambient)
+      return None
 
    def getAmbient(self):
-      return self._ambient
+      if hasattr(self, '_ambient'):
+         return self._ambient
+      return None
 
    def getAmbientC(self):
-      return MeaterProbe.toCelsius(self._ambient)
+      if hasattr(self, '_ambient'):
+         return MeaterProbe.toCelsius(self._ambient)
+      return None
 
    def getBattery(self):
-      return self._battery
+      if hasattr(self, '_ambient'):
+         return self._battery
+      return None
 
    def getAddress(self):
-      return self._addr
+      if hasattr(self, '_addr'):
+         return self._addr
+      return None
 
    def getID(self):
-      return self._id
+      if hasattr(self, '_id'):
+         return self._id
+      return None
 
    def getFirmware(self):
-      return self._firmware
+      if hasattr(self, '_firmware'):
+         return self._firmware
+      return None
 
    def connect(self):
       self._dev = btle.Peripheral(self._addr)
@@ -66,11 +86,14 @@ class MeaterProbe:
    def update(self):
       tempBytes = self.readCharacteristic(31)
       batteryBytes = self.readCharacteristic(35)
-      self._tip = MeaterProbe.bytesToInt(tempBytes[0], tempBytes[1])
-      self._ambient = MeaterProbe.convertAmbient(tempBytes)
-      self._battery = MeaterProbe.bytesToInt(batteryBytes[0], batteryBytes[1])*10
-      (self._firmware, self._id) = str(self.readCharacteristic(22)).split("_")
-      self._lastUpdate = time.time()
+      if len(tempBytes) > 0:
+         self._tip = MeaterProbe.bytesToInt(tempBytes[0], tempBytes[1])
+         self._ambient = MeaterProbe.convertAmbient(tempBytes)
+         self._battery = MeaterProbe.bytesToInt(batteryBytes[0], batteryBytes[1])*10
+         (self._firmware, self._id) = str(self.readCharacteristic(22)).split("_")
+         self._lastUpdate = time.time()
 
    def __str__(self):
-       return "%s %s probe: %s tip: %fF/%fC ambient: %fF/%fC battery: %d%% age: %ds" % (self.getAddress(), self.getFirmware(), self.getID(), self.getTipF(), self.getTipC(), self.getAmbientF(), self.getAmbientC(), self.getBattery(), time.time() - self._lastUpdate)
+      if hasattr(self, '_lastUpdate'):
+         return "%s %s probe: %s tip: %fF/%fC ambient: %fF/%fC battery: %d%% age: %ds" % (self.getAddress(), self.getFirmware(), self.getID(), self.getTipF(), self.getTipC(), self.getAmbientF(), self.getAmbientC(), self.getBattery(), time.time() - self._lastUpdate)
+      return "No data yet."
